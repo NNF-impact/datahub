@@ -281,7 +281,8 @@ allprojects {
   apply plugin: 'eclipse'
   // apply plugin: 'org.gradlex.java-ecosystem-capabilities'
 
-  tasks.withType(Test).configureEach { task -> if (task.project.name != "metadata-io") {
+  tasks.withType(Test).configureEach { task -> 
+    if (task.project.name != "metadata-io") {
       // https://docs.gradle.org/current/userguide/performance.html
       maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
 
@@ -293,9 +294,9 @@ allprojects {
   }
 
   /**
-   * If making changes to this section also see the sections for pegasus below
-   * which use project.plugins.hasPlugin('pegasus')
-   **/
+  * Configure Java toolchains and compile options for projects not using 'pegasus'
+  * plugin but using 'java', 'java-library', or 'application' plugins.
+  */
   if (!project.plugins.hasPlugin('pegasus') && (project.plugins.hasPlugin('java')
           || project.plugins.hasPlugin('java-library')
           || project.plugins.hasPlugin('application'))) {
@@ -325,12 +326,12 @@ allprojects {
     }
   }
 
-  // not duplicated, need to set this outside and inside afterEvaluate
+  // Ensure toolchains are correctly set outside and inside afterEvaluate
   afterEvaluate {
     /**
-     * If making changes to this section also see the sections for pegasus below
-     * which use project.plugins.hasPlugin('pegasus')
-     **/
+    * Reapply Java toolchain and compile options after evaluation for projects
+    * not using 'pegasus' plugin but using 'java', 'java-library', or 'application' plugins.
+    */
     if (!project.plugins.hasPlugin('pegasus') && (project.plugins.hasPlugin('java')
             || project.plugins.hasPlugin('java-library')
             || project.plugins.hasPlugin('application'))) {
@@ -346,19 +347,20 @@ allprojects {
       }
     }
   }
-}
+  
 
-configure(subprojects.findAll {! it.name.startsWith('spark-lineage')}) {
+  configure(subprojects.findAll {! it.name.startsWith('spark-lineage')}) {
 
-  configurations.all {
-    exclude group: "io.netty", module: "netty"
-    exclude group: "log4j", module: "log4j"
-    exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
-    exclude group: "com.vaadin.external.google", module: "android-json"
-    exclude group: "org.slf4j", module: "slf4j-reload4j"
-    exclude group: "org.slf4j", module: "slf4j-log4j12"
-    exclude group: "org.slf4j", module: "slf4j-nop"
-    exclude group: "org.slf4j", module: "slf4j-ext"
+    configurations.all {
+      exclude group: "io.netty", module: "netty"
+      exclude group: "log4j", module: "log4j"
+      exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+      exclude group: "com.vaadin.external.google", module: "android-json"
+      exclude group: "org.slf4j", module: "slf4j-reload4j"
+      exclude group: "org.slf4j", module: "slf4j-log4j12"
+      exclude group: "org.slf4j", module: "slf4j-nop"
+      exclude group: "org.slf4j", module: "slf4j-ext"
+    }
   }
 }
 

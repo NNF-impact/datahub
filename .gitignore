@@ -38,9 +38,18 @@ MANIFEST
 **/bin
 # Added by mp-maker
 **/build
+
+# Ignore root level config directory but not others
 /config
+
+# Include specific config file
+!buildSrc/src/main/java/com/linkedin/metadata/aspect/plugins/config
+
+# Ignore i18n directories one level deep
 */i18n
-out/
+
+# Ignore root level out directory but not others
+/out
 
 # Mac OS
 **/.DS_Store
